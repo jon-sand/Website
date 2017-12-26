@@ -1,0 +1,161 @@
+@page
+@model RazorPageWebsite.Pages.CryptoModel
+@{
+    ViewData["Title"] = "Crypto";
+}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Jon Sand - Software Engineer</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+<!-- 
+    <link rel="stylesheet" type="text/css" media="screen" href="vendor/jqGrid/css/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="vendor/jqGrid/css/trirand/ui.jqgrid.css" /> -->
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+
+    <!-- Custom styles for this template -->
+    <link href="css/grayscale.css" rel="stylesheet">
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Jon Sand</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <!-- <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#skills">Skills</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+            </li>
+          </ul> -->
+        </div>
+      </div>
+    </nav>
+
+    <section class="content-section text-center">
+      <div class="container">
+        <div class="col-lg-8 mx-auto">
+          <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Status</th>
+                <th>BaseAsset</th>
+                <th>BaseAssetPrecision</th>
+                <th>QuoteAsset</th>
+                <th>QuoteAssetPrecision</th>
+                <th>IcebergAllowed</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Symbol</th>
+                <th>Status</th>
+                <th>BaseAsset</th>
+                <th>BaseAssetPrecision</th>
+                <th>QuoteAsset</th>
+                <th>QuoteAssetPrecision</th>
+                <th>IcebergAllowed</th>
+            </tr>
+        </tfoot>
+    </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container text-center">
+          <p id="binanceTime"></p>
+          <br />
+        <p>Copyright &copy; Jon Sand 2017</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- 
+    <script type="text/ecmascript" src="vendor/jqGrid/js/trirand/i18n/grid.locale-en.js"></script>
+    <script type="text/ecmascript" src="vendor/jqGrid/js/trirand/jquery.jqGrid.min.js"></script>
+     -->
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/grayscale.min.js"></script>
+    <script>
+        $(document).ready(function(){ updateTime(); window.setTimeout(updateTime, 5000); });
+        $(document).ready(function(){ updateStocks(); });//window.setTimeout(updateStocks, 10000); });
+
+        function updateTime() {
+            $.ajax({
+                type: 'GET',
+                url:'crypto?handler=proxy&url=https://api.binance.com/api/v1/time',
+                dataType: "json",
+                success: function(data, textStatus, jqXHR){
+                    $('#binanceTime').text(JSON.parse(data).serverTime);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#binanceTime').text(errorThrown);
+                }
+            });
+        };
+    
+        function updateStocks() {
+          $.ajax({
+                type: 'GET',
+                url: 'crypto?handler=proxy&url=https://api.binance.com/api/v1/exchangeInfo',
+                dataType: "json",
+                success: function(data, textStatus, jqXHR){
+                  var dataJson = JSON.parse(data);
+                  $('#example').DataTable( {
+                    "aaData": dataJson.symbols,
+                    "aoColumns": [
+                      { "mDataProp": "symbol" },
+                      { "mDataProp": "status" },
+                      { "mDataProp": "baseAsset" },
+                      { "mDataProp": "baseAssetPrecision" },
+                      { "mDataProp": "quoteAsset" },
+                      { "mDataProp": "quoteAssetPrecision" },
+                      { "mDataProp": "icebergAllowed" }
+                    ]
+                  });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                  
+                }
+            });
+          };
+    </script>
+  </body>
+
+</html>

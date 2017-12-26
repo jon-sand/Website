@@ -1,1 +1,0 @@
-This is the personal website for Jon Sand. This github is public for anyone to look at, use, or modify as long as any references to me are removed unless they're for referencing or crediting.
